@@ -8,21 +8,26 @@ process = Process.pid
 
 Signal.trap("INT") {
   STDERR.puts "\nShutting server down..."
-  sleep 1
+  # sleep 1
   exit
 }
 
+def bold string
+  "\e[1m#{string}\e[0m"
+end
+
 if server
-  STDERR.puts "\nStarted server on #{address} with PID #{process}"
+  STDERR.puts "\nStarted server on #{bold(address)} with PID #{bold(process)}"
 
   loop do
+    initial_time = Time.now
     socket = server.accept
     request = socket.gets.split(" ")
     method = request[0]
     resource = request[1]
     request_protocol = request[2]
   
-    STDERR.puts "[#{method}] call to #{resource}  |  for #{address}  |  at #{Time.now}  |  (#{request_protocol})"
+    STDERR.puts "[#{bold(method)}] call to #{bold(resource)} --- for #{bold(address)} --- at #{bold(initial_time)} --- (#{request_protocol})"
 
     response = "Hello World\n"
 
