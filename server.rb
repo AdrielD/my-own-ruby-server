@@ -33,14 +33,14 @@ module LilServer
         exit
       }
 
-      STDERR.puts "\nStarted server on #{bold(@address)} with PID #{bold(pid)}"
+      STDERR.puts "\nStarted server on #{@address.bold} with PID #{pid.bold}"
 
       loop do
         initial_time = Time.now
         client = tcp_server.accept
         request = Request.new client
       
-        STDERR.puts "[#{bold(request.method)}] call to #{bold(request.resource)} --- for #{bold(@address)} --- at #{bold(initial_time)} --- (#{request.protocol})"
+        STDERR.puts "[#{request.method.bold}] call to #{request.resource.bold} --- for #{@address.bold} --- at #{initial_time.bold} --- (#{request.protocol})"
 
         response = Response.new
         response.body = "<p>Hello World</p>"
@@ -81,8 +81,22 @@ module LilServer
   end
 end
 
-def bold string
-  "\e[1m#{string}\e[0m"
+module ColorOutput
+  def bold
+    "\e[1m#{self}\e[0m"
+  end
+end
+
+class String
+  include ColorOutput
+end
+
+class Fixnum
+  include ColorOutput
+end
+
+class Time
+  include ColorOutput
 end
 
 LilServer::Server.new.start
